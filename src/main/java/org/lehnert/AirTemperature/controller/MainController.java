@@ -13,12 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.sql.Date;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.*;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 @AllArgsConstructor
 @RequestMapping("/")
@@ -72,6 +69,41 @@ public class MainController {
             }
         };
 
+        VoidFunction getYearData = () -> {
+            Calendar c = Calendar.getInstance();
+            c.set(Calendar.DAY_OF_YEAR, 1);
+            var first = c.getTime();
+
+            c.set(Calendar.MONTH, 11); // 11 = december
+            c.set(Calendar.DAY_OF_MONTH, 31); // new years eve
+
+            var last = c.getTime();
+
+            Map<Integer, List<Double>> sumDaysOfMonth = new HashMap<>();
+
+            for (AirTemperature d: getDataByRange.apply(first, last)) {
+
+
+                c.setTime(d.getDate());
+                var month = c.get(Calendar.MONTH);
+
+                var MonthList =  sumDaysOfMonth.getOrDefault(month, new ArrayList<>());
+                MonthList.add(d.getTemperature());
+
+                sumDaysOfMonth.put(month, MonthList);
+            }
+
+            for (var set : sumDaysOfMonth.entrySet()) {
+                labels.add(String.valueOf(set.getKey()));
+
+                // get average of the month
+                temps.add(set.getValue().stream()
+                        .mapToDouble(Double::doubleValue)
+                        .average()
+                        .orElse(Double.NaN));
+            }
+        };
+
         try {
             RangeEnum possibleRange = RangeEnum.valueOf(range);
 
@@ -79,6 +111,7 @@ public class MainController {
             switch (possibleRange) {
                 case WEEK -> getWeekData.apply();
                 case MONTH -> getMonthData.apply();
+                case YEAR -> getYearData.apply();
             }
 
         } catch (Exception ignore) {

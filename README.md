@@ -83,9 +83,9 @@ corresponding GitHub project wiki
 - [x] Basic Login functionality implemented
 - [ ] Data Display
   - [ ] Display data by year
-  - [ ] Display data by month
-  - [ ] Display data by week
-- [ ] Database Table for Air Temperature created
+  - [x] Display data by month
+  - [x] Display data by week
+- [x] Database Table for Air Temperature created
 - [ ] integration of Spring Batch to fetch real-time air temperature data
 - [ ] implementation of a reactive chart for dynamic data visualization
 
