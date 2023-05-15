@@ -43,6 +43,10 @@ Other potential applications of this project include:
 
 These additional features expand the capabilities of the project, allowing users to explore and analyze air temperature data in more detail.
 
+<p align="center">
+<img src="readme/images/app.png" alt="project image">
+</p>
+
 ### Built With
 
 * [Spring Boot](https://spring.io/projects/spring-boot)
