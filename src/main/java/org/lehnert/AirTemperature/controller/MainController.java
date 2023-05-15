@@ -17,6 +17,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 @AllArgsConstructor
@@ -30,6 +31,11 @@ public class MainController {
         ArrayList<Double> temps = new ArrayList<>();
         ArrayList<String> labels = new ArrayList<>();
 
+        BiFunction<java.util.Date, java.util.Date, Iterable<AirTemperature>> getDataByRange = (first, last) ->
+                airTemperatureRepository
+                .getAirTemperatureByBetweenFirstAndLast(new Date(first.getTime()),
+                        new Date(last.getTime()));
+
         VoidFunction getWeekData = () -> {
             Calendar c = Calendar.getInstance();
 
@@ -41,15 +47,28 @@ public class MainController {
             c.add(Calendar.DATE, 6);
             var last = c.getTime();
 
-            // query data
-            Iterable<AirTemperature> data = airTemperatureRepository
-                    .getAirTemperatureByBetweenFirstAndLast(new java.sql.Date(first.getTime()),
-                            new java.sql.Date(last.getTime()));
-
             // return only days of week with data
-            for (AirTemperature d: data) {
+            for (AirTemperature d: getDataByRange.apply(first, last)) {
                 temps.add(d.getTemperature());
                 labels.add(new SimpleDateFormat("EEEE").format(d.getDate()));
+            }
+        };
+
+        VoidFunction getMonthData = () -> {
+            Calendar c = Calendar.getInstance();
+
+            var firstDay = c.getActualMinimum(Calendar.DAY_OF_MONTH);
+            c.set(Calendar.DAY_OF_MONTH, firstDay);
+            var first = c.getTime();
+
+            var lastDay = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+            c.set(Calendar.DAY_OF_MONTH, lastDay);
+            var last = c.getTime();
+
+            for (AirTemperature data: getDataByRange.apply(first, last)) {
+                c.setTime(data.getDate());
+                labels.add(String.valueOf(c.get(Calendar.DAY_OF_MONTH)));
+                temps.add(data.getTemperature());
             }
         };
 
@@ -59,6 +78,7 @@ public class MainController {
             // give the values by range
             switch (possibleRange) {
                 case WEEK -> getWeekData.apply();
+                case MONTH -> getMonthData.apply();
             }
 
         } catch (Exception ignore) {
