@@ -4,46 +4,100 @@
     <meta charset="UTF-8">
     <title>Air Temperature data</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.0/chartjs-plugin-annotation.min.js" integrity="sha512-+hHhJMzywb+yL7spYSOO+uG6V3ttED6vVFwluLLzHIbQNNQA4shSdMg2Zu+4OACQ3QXuF8Z+deQrJ57WriM3bw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </head>
 <body>
     <canvas id="temperatureChart"></canvas>
-    <div class="text-center mt-2 col-md-12">
-        <div class="btn-group" role="group" aria-label="Basic example">
-            <button type="button" class="btn btn-secondary">Year</button>
-            <button type="button" class="btn btn-secondary">Month</button>
-            <button type="button" class="btn btn-secondary">Week</button>
+    <div class="container mt-2 col-md-12">
+        <div class="row">
+            <div class="col text-left">
+                <p>Durchschnittstemperatur: 0</p>
+            </div>
+            <div class="col text-center">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-secondary">Year</button>
+                    <button type="button" class="btn btn-secondary">Month</button>
+                    <button type="button" class="btn btn-secondary">Week</button>
+                </div>
+            </div>
+            <div class="col text-right">
+                <p>Höchsttemperatur: 0</p>
+            </div>
         </div>
     </div>
+
     <script th:inline="javascript">
         // temperature data
-        const temperatureData = [25, 28, 26, 24, 27, 23, 22];
+        const temperatureData = [25, 30, 26, 24, 27, 23, 22];
 
         // Canvas-Element
         const ctx = document.getElementById('temperatureChart').getContext('2d');
+
+        /**
+         * Calculates the average of an array of numbers.
+         * @param {Array} data - The array of numbers.
+         * @returns {number} The average value.
+         */
+        const calculateAverage = (data) => {
+            const sum = data.reduce((acc, value) => acc + value, 0);
+            return sum / data.length;
+        }
+
+        /**
+         * Calculates the standard deviation of an array of numbers.
+         * @param {Array} data - The array of numbers.
+         * @returns {number} The standard deviation value.
+         */
+        const calculateStandardDeviation = (data) => {
+            const average = calculateAverage(data);
+            const squaredDifferences = data.map(value => (value - average) ** 2);
+            const sumSquaredDifferences = squaredDifferences.reduce((acc, value) => acc + value, 0);
+            const variance = sumSquaredDifferences / data.length;
+            return Math.sqrt(variance);
+        }
+
+        // Calculation of the threshold as average + 2 * standard deviation
+        const average = calculateAverage(temperatureData);
+        const standardDeviation = calculateStandardDeviation(temperatureData);
+        const threshold =  Math.trunc(average + 2 * standardDeviation)
 
         // create chart
         const temperatureChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'], // X-Achse Beschriftung
-                datasets: [{
-                    label: 'Lufttemperatur',
-                    data: temperatureData, // Temperaturdaten
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)', // Hintergrundfarbe
-                    borderColor: 'rgba(75, 192, 192, 1)', // Randfarbe
-                    borderWidth: 1 // Randbreite
-                }]
+                labels: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
+                datasets: [
+                    {
+                        label: 'Lufttemperatur',
+                        data: temperatureData,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                    },
+                ],
             },
             options: {
                 responsive: true,
                 scales: {
                     y: {
-                        beginAtZero: true // Y-Achse ab 0 beginnen
-                    }
-                }
-            }
+                        beginAtZero: true,
+                    },
+                },
+                plugins: {
+                    annotation: {
+                        annotations: temperatureData.map((value, index) => ({
+                            type: 'line',
+                            mode: 'horizontal',
+                            scaleID: 'y',
+                            value: value,
+                            borderColor: value >= threshold ? 'rgba(255, 0, 0, 1)' : 'rgba(0, 0, 0, 0)',
+                            borderWidth: 2,
+                        })),
+                    },
+                },
+            },
         });
 
     </script>
