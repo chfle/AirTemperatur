@@ -16,15 +16,10 @@ const calculateAverage = (data) => {
    return sum / data.length;
 }
 
-/**
- * Calculates the standard deviation of an array of numbers.
- * @param {Array} data - The array of numbers.
- * @returns {number} The standard deviation value.
- */
-const calculateStandardDeviation = (data) => {
-   const average = calculateAverage(data);
-   const squaredDifferences = data.map(value => (value - average) ** 2);
-   const sumSquaredDifferences = squaredDifferences.reduce((acc, value) => acc + value, 0);
-   const variance = sumSquaredDifferences / data.length;
-   return Math.sqrt(variance);
+function calculateThreshold(numbers) {
+   const average = numbers.reduce((sum, num) => sum + num, 0) / numbers.length;
+   const squaredDifferences = numbers.map(num => Math.pow(num - average, 2));
+   const variance = squaredDifferences.reduce((sum, squaredDiff) => sum + squaredDiff, 0) / numbers.length;
+   const standardDeviation = Math.sqrt(variance);
+   return average + 2 * standardDeviation;
 }

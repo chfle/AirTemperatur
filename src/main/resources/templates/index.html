@@ -41,9 +41,7 @@
         const ctx = document.getElementById('temperatureChart').getContext('2d');
 
         // Calculation of the threshold as average + 2 * standard deviation
-        const average = calculateAverage(temperatureData);
-        const standardDeviation = calculateStandardDeviation(temperatureData);
-        const threshold =  Math.trunc(average + 2 * standardDeviation)
+        const threshold = calculateThreshold(temperatureData)
 
         // max temperature
         document.getElementById("max").innerText = `Höchsttemperatur: ${Math.max(...temperatureData)}`
