@@ -81,8 +81,8 @@ corresponding GitHub project wiki
 ## Roadmap
 
 - [x] Basic Login functionality implemented
-- [ ] Data Display
-  - [ ] Display data by year
+- [x] Data Display
+  - [x] Display data by year
   - [x] Display data by month
   - [x] Display data by week
 - [x] Database Table for Air Temperature created

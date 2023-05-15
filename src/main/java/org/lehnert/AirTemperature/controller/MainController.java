@@ -79,22 +79,23 @@ public class MainController {
 
             var last = c.getTime();
 
-            Map<Integer, List<Double>> sumDaysOfMonth = new HashMap<>();
+            Map<String, List<Double>> sumDaysOfMonth = new TreeMap<>(Collections.reverseOrder());
 
             for (AirTemperature d: getDataByRange.apply(first, last)) {
-
+                SimpleDateFormat dateFormat = new SimpleDateFormat( "LLLL");
 
                 c.setTime(d.getDate());
-                var month = c.get(Calendar.MONTH);
 
-                var MonthList =  sumDaysOfMonth.getOrDefault(month, new ArrayList<>());
+                var MonthList =  sumDaysOfMonth.getOrDefault(dateFormat.format(d.getDate()), new ArrayList<>());
                 MonthList.add(d.getTemperature());
 
-                sumDaysOfMonth.put(month, MonthList);
+
+                sumDaysOfMonth.put(dateFormat.format(d.getDate()), MonthList);
             }
 
             for (var set : sumDaysOfMonth.entrySet()) {
-                labels.add(String.valueOf(set.getKey()));
+
+                labels.add(set.getKey());
 
                 // get average of the month
                 temps.add(set.getValue().stream()
