@@ -49,7 +49,7 @@ These additional features expand the capabilities of the project, allowing users
 * [Spring Security](https://spring.io/projects/spring-security)
 * [Thymeleaf](https://www.thymeleaf.org/)
 * [Bootstrap](https://getbootstrap.com/docs/5.0/getting-started/introduction/)
-* [Chartjs](www.chartjs.org)
+* [Chartjs](https://www.chartjs.org)
 * [H2](https://www.h2database.com/html/main.html)
 
 <!-- GETTING STARTED -->
