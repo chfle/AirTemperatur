@@ -18,9 +18,9 @@
             </div>
             <div class="col text-center">
                 <div class="btn-group" role="group" aria-label="Basic example">
-                    <button type="button" class="btn btn-secondary">Year</button>
-                    <button type="button" class="btn btn-secondary">Month</button>
-                    <button type="button" class="btn btn-secondary">Week</button>
+                    <button onclick="getByEnum('YEAR')" type="button" class="btn btn-secondary">Year</button>
+                    <button onclick="getByEnum('MONTH')" type="button" class="btn btn-secondary">Month</button>
+                    <button onclick="getByEnum('WEEK')" type="button" class="btn btn-secondary">Week</button>
                 </div>
             </div>
             <div class="col text-right">
@@ -28,36 +28,17 @@
             </div>
         </div>
     </div>
-
+    <script th:src="@{/js/index.js}"></script>
     <script th:inline="javascript">
         // temperature data
-        const temperatureData = [25, 30, 26, 24, 27, 23, 22];
+        let temperatureData = /*[[${temps}]]*/ null;
+        let labels = /*[[${labels}]]*/ null;
+
+        console.log(temperatureData)
+        console.log(labels)
 
         // Canvas-Element
         const ctx = document.getElementById('temperatureChart').getContext('2d');
-
-        /**
-         * Calculates the average of an array of numbers.
-         * @param {Array} data - The array of numbers.
-         * @returns {number} The average value.
-         */
-        const calculateAverage = (data) => {
-            const sum = data.reduce((acc, value) => acc + value, 0);
-            return sum / data.length;
-        }
-
-        /**
-         * Calculates the standard deviation of an array of numbers.
-         * @param {Array} data - The array of numbers.
-         * @returns {number} The standard deviation value.
-         */
-        const calculateStandardDeviation = (data) => {
-            const average = calculateAverage(data);
-            const squaredDifferences = data.map(value => (value - average) ** 2);
-            const sumSquaredDifferences = squaredDifferences.reduce((acc, value) => acc + value, 0);
-            const variance = sumSquaredDifferences / data.length;
-            return Math.sqrt(variance);
-        }
 
         // Calculation of the threshold as average + 2 * standard deviation
         const average = calculateAverage(temperatureData);
@@ -72,7 +53,7 @@
         const temperatureChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'],
+                labels: labels,
                 datasets: [
                     {
                         label: 'Lufttemperatur',

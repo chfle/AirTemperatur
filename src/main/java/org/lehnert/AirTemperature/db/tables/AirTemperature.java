@@ -11,6 +11,9 @@ import lombok.Setter;
 import java.sql.Date;
 import java.sql.Time;
 
+/**
+ * Represents an entity for storing air temperature data.
+ */
 @Entity
 @NoArgsConstructor
 public class AirTemperature {
