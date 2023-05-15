@@ -13,7 +13,7 @@
     <div class="container mt-2 col-md-12">
         <div class="row">
             <div class="col text-left">
-                <p>Durchschnittstemperatur: 0</p>
+                <p id="average">Durchschnittstemperatur: 0</p>
             </div>
             <div class="col text-center">
                 <div class="btn-group" role="group" aria-label="Basic example">
@@ -23,7 +23,7 @@
                 </div>
             </div>
             <div class="col text-right">
-                <p>Höchsttemperatur: 0</p>
+                <p id="max">Höchsttemperatur: 0</p>
             </div>
         </div>
     </div>
@@ -62,6 +62,10 @@
         const average = calculateAverage(temperatureData);
         const standardDeviation = calculateStandardDeviation(temperatureData);
         const threshold =  Math.trunc(average + 2 * standardDeviation)
+
+        // max temperature
+        document.getElementById("max").innerText = `Höchsttemperatur: ${Math.max(...temperatureData)}`
+        document.getElementById("average").innerText = `Durchschnittstemperatur: ${Math.round((calculateAverage(temperatureData) + Number.EPSILON) * 100) / 100}`
 
         // create chart
         const temperatureChart = new Chart(ctx, {
