@@ -44,7 +44,7 @@ Other potential applications of this project include:
 These additional features expand the capabilities of the project, allowing users to explore and analyze air temperature data in more detail.
 
 <p align="center">
-<img src="readme/images/app.png" alt="project image">
+<img src="readme/images/app_month.png" alt="project image">
 </p>
 
 ### Built With
