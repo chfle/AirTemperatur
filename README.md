@@ -64,7 +64,6 @@ These additional features expand the capabilities of the project, allowing users
 
 * Java 20+
 * Maven 3+
-* Docker
 
 ### Installation
 
