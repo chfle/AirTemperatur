@@ -1,6 +1,7 @@
 package org.lehnert.AirTemperature.controller;
 
 import lombok.AllArgsConstructor;
+import org.lehnert.AirTemperature.db.ITemperature;
 import org.lehnert.AirTemperature.db.repository.AirTemperatureRepository;
 import org.lehnert.AirTemperature.db.tables.AirTemperature;
 import org.lehnert.AirTemperature.helper.RangeEnum;
@@ -28,7 +29,7 @@ public class MainController {
         ArrayList<Double> temps = new ArrayList<>();
         ArrayList<String> labels = new ArrayList<>();
 
-        BiFunction<java.util.Date, java.util.Date, Iterable<AirTemperature>> getDataByRange = (first, last) ->
+        BiFunction<java.util.Date, java.util.Date, Iterable<ITemperature>> getDataByRange = (first, last) ->
                 airTemperatureRepository
                 .getAirTemperatureByBetweenFirstAndLast(new Date(first.getTime()),
                         new Date(last.getTime()));
@@ -45,8 +46,8 @@ public class MainController {
             var last = c.getTime();
 
             // return only days of week with data
-            for (AirTemperature d: getDataByRange.apply(first, last)) {
-                temps.add(d.getTemperature());
+            for (ITemperature d: getDataByRange.apply(first, last)) {
+                temps.add(d.getTemp());
                 labels.add(new SimpleDateFormat("EEEE").format(d.getDate()));
             }
         };
@@ -62,10 +63,10 @@ public class MainController {
             c.set(Calendar.DAY_OF_MONTH, lastDay);
             var last = c.getTime();
 
-            for (AirTemperature data: getDataByRange.apply(first, last)) {
+            for (ITemperature data: getDataByRange.apply(first, last)) {
                 c.setTime(data.getDate());
                 labels.add(String.valueOf(c.get(Calendar.DAY_OF_MONTH)));
-                temps.add(data.getTemperature());
+                temps.add(data.getTemp());
             }
         };
 
@@ -81,13 +82,13 @@ public class MainController {
 
             Map<String, List<Double>> sumDaysOfMonth = new TreeMap<>(Collections.reverseOrder());
 
-            for (AirTemperature d: getDataByRange.apply(first, last)) {
+            for (ITemperature d: getDataByRange.apply(first, last)) {
                 SimpleDateFormat dateFormat = new SimpleDateFormat( "LLLL");
 
                 c.setTime(d.getDate());
 
                 var MonthList =  sumDaysOfMonth.getOrDefault(dateFormat.format(d.getDate()), new ArrayList<>());
-                MonthList.add(d.getTemperature());
+                MonthList.add(d.getTemp());
 
 
                 sumDaysOfMonth.put(dateFormat.format(d.getDate()), MonthList);
